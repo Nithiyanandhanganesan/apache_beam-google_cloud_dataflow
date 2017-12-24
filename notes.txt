@@ -1,0 +1,110 @@
+Apache Beam Overview:
+==========================
+Apache Beam is an open source, unified model for defining both batch and streaming data-parallel processing pipelines.
+Using one of the open source Beam SDKs, you build a program that defines the pipeline.
+The pipeline is then executed by one of Beam’s supported distributed processing back-ends, which include Apache Apex, Apache Flink, Apache Spark,
+and Google Cloud Dataflow.
+
+You can also use Beam for Extract, Transform, and Load (ETL) tasks and pure data integration.
+These tasks are useful for moving data between different storage media and data sources, transforming data into a more desirable format,
+or loading data onto a new system.
+
+Apache Beam SDKs:
+===================
+The Beam SDKs provide a unified programming model that can represent and transform data sets of any size, whether the input is a finite data set
+from a batch data source, or an infinite data set from a streaming data source. The Beam SDKs use the same classes to represent both bounded
+and unbounded data, and the same transforms to operate on that data. You use the Beam SDK of your choice to build a program that defines
+your data processing pipeline.
+
+Beam supports : Java & Python
+
+
+Apache Beam Pipeline Runners:
+==================================
+The Beam Pipeline Runners translate the data processing pipeline you define with your Beam program into the API compatible with the
+distributed processing back-end of your choice. When you run your Beam program, you’ll need to specify an appropriate runner for the
+back-end where you want to execute your pipeline.
+
+Beam currently supports Runners that work with the following distributed processing back-ends:
+
+- Apache Apex Apache Apex
+- Apache Flink Apache Flink
+- Apache Gearpump (incubating) Apache Gearpump
+- Apache Spark Apache Spark
+- Google Cloud Dataflow Google Cloud Dataflow
+
+Note: You can always execute your pipeline locally for testing and debugging purposes.
+
+First Program:
+=================
+
+
+mvn archetype:generate \
+      -DarchetypeGroupId=org.apache.beam \
+      -DarchetypeArtifactId=beam-sdks-java-maven-archetypes-examples \
+      -DarchetypeVersion=2.1.0 \
+      -DgroupId=org.example \
+      -DartifactId=word-count-beam \
+      -Dversion="0.1" \
+      -Dpackage=org.apache.beam.examples \
+      -DinteractiveMode=false
+
+
+It will download the word count example code. Import the code into eclipse. [File -> Import -> Existing Maven projects]
+
+The DirectRunner is a common runner for getting started, as it runs locally on your machine and requires no specific setup.
+
+After you’ve chosen which runner you’d like to use:
+
+ - Ensure you’ve done any runner-specific setup.
+ - Add this in arguments in eclipse
+    --inputFile=pom.xml --output=counts --runner=DirectRunner
+ - Run your first WordCount pipeline(WordCount.java).
+
+
+
+Apache Beam Java SDK:
+=========================
+
+The Java SDK for Apache Beam provides a simple, powerful API for building both batch and streaming parallel data processing pipelines in Java.
+
+
+Overview:
+=================
+
+To use Beam, you need to first create a driver program using the classes in one of the Beam SDKs.
+Your driver program defines your pipeline, including all of the inputs, transforms, and outputs; it also sets execution options for your pipeline.
+
+
+
+Pipeline:
+------------
+A Pipeline encapsulates your entire data processing task, from start to finish. This includes reading input data, transforming that data, and writing output data. All Beam driver programs must create a Pipeline. When you create the Pipeline, you must also specify the execution options that tell the Pipeline where and how to run.
+
+PCollection:
+  A PCollection represents a distributed data set that your Beam pipeline operates on. The data set can be bounded, meaning it comes from a fixed
+  source like a file, or unbounded, meaning it comes from a continuously updating source via a subscription or other mechanism.
+  Your pipeline typically creates an initial PCollection by reading data from an external data source, but you can also create a PCollection
+  from in-memory data within your driver program. From there, PCollections are the inputs and outputs for each step in your pipeline.
+
+Transform:
+  A Transform represents a data processing operation, or a step, in your pipeline. Every Transform takes one or more PCollection objects as input,
+  performs a processing function that you provide on the elements of that PCollection, and produces one or more output PCollection objects.
+
+I/O Source and Sink:
+  Beam provides Source and Sink APIs to represent reading and writing data, respectively. Source encapsulates the code necessary to read data into
+  your Beam pipeline from some external source, such as cloud file storage or a subscription to a streaming data source. Sink likewise encapsulates
+  the code necessary to write the elements of a PCollection to an external data sink.
+
+
+A typical Beam driver program works as follows:
+
+- Create a Pipeline object and set the pipeline execution options, including the Pipeline Runner.
+- Create an initial PCollection for pipeline data, either using the Source API to read data from an external source, or using a Create transform
+  to build a PCollection from in-memory data.
+- Apply Transforms to each PCollection. Transforms can change, filter, group, analyze, or otherwise process the elements in a PCollection.
+  A transform creates a new output PCollection without consuming the input collection. A typical pipeline applies subsequent transforms
+  to the each new output PCollection in turn until processing is complete.
+- Output the final, transformed PCollection(s), typically using the Sink API to write data to an external source.
+
+Run the pipeline using the designated Pipeline Runner.
